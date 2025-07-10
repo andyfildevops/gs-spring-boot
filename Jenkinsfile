@@ -14,9 +14,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/andyfildevops/gs-spring-boot.git'
+                git url: 'https://github.com/andyfildevops/gs-spring-boot.git', branch: 'main'
             }
         }
+
 
         stage('Build with Maven') {
             steps {
