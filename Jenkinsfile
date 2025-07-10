@@ -29,7 +29,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sh '''
-                scp -i ~/.ssh/id_rsa complete/target/${JAR_NAME} $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
+                scp -i $LOCAL_KEY complete/target/$JAR_NAME $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
                 ssh -i $LOCAL_KEY $DEPLOY_HOST "pkill -f 'java -jar' || true"
                 ssh -i $LOCAL_KEY $DEPLOY_HOST "nohup java -jar $DEPLOY_DIR/$JAR_NAME --server.address=0.0.0.0 --server.port=8080 > $DEPLOY_DIR/app.log 2>&1 &"
                 '''
