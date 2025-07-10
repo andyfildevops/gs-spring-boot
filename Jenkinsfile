@@ -30,9 +30,9 @@ pipeline {
             steps {
                 sh '''
                 scp -i ~/.ssh/id_rsa complete/target/${JAR_NAME} $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
-                ssh -i ~/.ssh/id_rsa $DEPLOY_HOST "pkill -f 'java -jar' || true && nohup java -jar $DEPLOY_DIR/$JAR_NAME --server.address=0.0.0.0 --server.port=8080 > $DEPLOY_DIR/app.log 2>&1 &"
+                ssh -i ~/.ssh/id_rsa $DEPLOY_HOST "pkill -f 'java -jar' || true && setsid java -jar $DEPLOY_DIR/$JAR_NAME --server.address=0.0.0.0 --server.port=8080 > $DEPLOY_DIR/app.log 2>&1 < /dev/null &"
                 '''
             }
-        }
+}
     }
 }
