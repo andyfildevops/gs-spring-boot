@@ -9,6 +9,7 @@ pipeline {
         DEPLOY_HOST = 'ubuntu@3.90.0.130'
         DEPLOY_DIR = '/home/ubuntu/app'
         JAR_NAME = 'spring-boot-complete-0.0.1-SNAPSHOT.jar'
+        TELEGRAM_CHAT_ID = '381230046'
     }
 
     stages {
@@ -34,6 +35,15 @@ pipeline {
                 --server.address=0.0.0.0 --server.port=8080 > /home/ubuntu/app/app.log 2>&1 &"
                 '''
             }
-}
+        }
+    }
+
+    post {
+        success {
+            telegramSend chatId: "${TELEGRAM_CHAT_ID}", message: " Білд Jenkins успішний та деплой завершено!"
+        }
+        failure {
+            telegramSend chatId: "${TELEGRAM_CHAT_ID}", message: " Білд Jenkins *FAILED*. Перевірте логи."
+        }
     }
 }
