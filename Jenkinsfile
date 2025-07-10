@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DEPLOY_HOST = 'ubuntu@3.90.0.130'
+        DEPLOY_HOST = 'ubuntu@<EC2_PUBLIC_IP>'
         DEPLOY_DIR = '/home/ubuntu/app'
         JAR_NAME = 'spring-boot-complete-0.0.1-SNAPSHOT.jar'
     }
