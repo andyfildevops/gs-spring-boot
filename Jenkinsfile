@@ -8,7 +8,7 @@ pipeline {
     environment {
         DEPLOY_HOST = 'ubuntu@3.90.0.130'
         DEPLOY_DIR = '/home/ubuntu/app'
-        JAR_NAME = 'app.jar'
+        JAR_NAME = 'spring-boot-complete-0.0.1-SNAPSHOT.jar'
     }
 
     stages {
@@ -18,20 +18,21 @@ pipeline {
             }
         }
 
-
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean install'
+                dir('complete') {
+                    sh 'mvn clean install'
+                }
             }
         }
 
         stage('Deploy to EC2') {
             steps {
                 sh '''
-                scp -i ~/.ssh/id_rsa target/*.jar $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
+                scp -i ~/.ssh/id_rsa complete/target/${JAR_NAME} $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
                 ssh -i ~/.ssh/id_rsa $DEPLOY_HOST << EOF
                   pkill -f "java -jar" || true
-                  nohup java -jar $DEPLOY_DIR/$JAR_NAME > $DEPLOY_DIR/app.log 2>&1 &
+                  nohup java -jar $DEPLOY_DIR/$JAR_NAME --server.port=8080 > $DEPLOY_DIR/app.log 2>&1 &
                 EOF
                 '''
             }
