@@ -29,9 +29,14 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sh '''
-                scp -i $LOCAL_KEY complete/target/$JAR_NAME $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
-                ssh -i $LOCAL_KEY $DEPLOY_HOST "pkill -f 'java -jar' || true"
-                ssh -i $LOCAL_KEY $DEPLOY_HOST "nohup java -jar $DEPLOY_DIR/$JAR_NAME --server.address=0.0.0.0 --server.port=8080 > $DEPLOY_DIR/app.log 2>&1 &"
+                echo "[INFO] Copying JAR to EC2"
+                /usr/bin/scp -i $LOCAL_KEY complete/target/$JAR_NAME $DEPLOY_HOST:$DEPLOY_DIR/$JAR_NAME
+
+                echo "[INFO] Killing previous Java process"
+                /usr/bin/ssh -i $LOCAL_KEY $DEPLOY_HOST "pkill -f 'java -jar' || true"
+
+                echo "[INFO] Starting application via nohup"
+                /usr/bin/ssh -i $LOCAL_KEY $DEPLOY_HOST "nohup java -jar $DEPLOY_DIR/$JAR_NAME --server.address=0.0.0.0 --server.port=8080 > $DEPLOY_DIR/app.log 2>&1 &"
                 '''
             }
 }
